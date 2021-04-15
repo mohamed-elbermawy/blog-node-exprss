@@ -1,0 +1,35 @@
+<div class="form-group">
+  <label for="userId">user Id</label>
+  <input
+    type="text"
+    class="form-control"
+    required
+    id="userId"
+    placeholder="userId"
+    name="id"
+    value="<%= post.userId%>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="title">Post Title</label>
+  <input
+    type="text"
+    class="form-control"
+    id="title"
+    placeholder="Enter Post Title"
+    required
+    name="title"
+    value="<%= post.title%>"
+  />
+</div>
+
+<div class="form-group">
+  <label for="body">Post Body</label>
+  <textarea class="form-control" name="body" id="body" required rows="3">
+<%= post.body%></textarea
+  >
+</div>
+
+<a href="/posts" class="btn btn-danger">Cancell</a>
+<button type="submit" class="btn btn-primary">Save</button>
