@@ -14,7 +14,6 @@ router.post("/register", (req, res, next) => {
   const { error } = userValidation.userValidation(req.body);
   if (error) {
     res.status(400).send(error.details[0].message);
-    // res.redirect("http://localhost:3000/register");
   } else {
     next();
   }
@@ -25,7 +24,6 @@ router.post("/login", (req, res, next) => {
   const { error } = userValidation.loginValidation(req.body);
   if (error) {
     res.status(400).send(error.details[0].message);
-    // res.redirect("http://localhost:3000/login");
   } else {
     next();
   }
@@ -45,15 +43,13 @@ router.post("/register", async (req, res, next) => {
     user = await user.save();
     if (user != null) {
       console.log(user);
-      res.redirect("http://localhost:3000/login");
+      res.status(200).json({ massage: "registered" });
     } else {
-      res.redirect("http://localhost:3000/register");
+      res.status(400).json({ error: "not registered" });
     }
-    // res.send("user registerd");
   } catch (err) {
     console.log(err);
-    res.redirect("http://localhost:3000/register");
-    // res.status(500).send("some thing wrong try later");
+    res.status(500).send("some thing wrong try later");
   }
 });
 
@@ -74,7 +70,7 @@ router.post("/login", async (req, res, next) => {
         const accessToken = generateAccessToken(payload);
         console.log(accessToken);
         console.log("---------------------");
-        res.json({ accessToken: accessToken });
+        res.status(200).json({ accessToken: accessToken });
       } else {
         res.status(401).send({ error: "invalid credentials" });
       }
@@ -87,101 +83,108 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.patch("/:id", (req, res, next) => {
-  const { error } = userValidation.userValidation(req.body);
-  if (error) {
-    res.status(400).send(error.details[0].message);
-  } else {
-    next();
-  }
-});
+// function to generateAccessToken
+function generateAccessToken(payload) {
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "7d",
+  });
+}
 
-router.patch("/:id", async (req, res, next) => {
-  if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-    let user = await User.find({ username: req.body.username });
-    console.log(user);
+// router.patch("/:id", (req, res, next) => {
+//   const { error } = userValidation.userValidation(req.body);
+//   if (error) {
+//     res.status(400).send(error.details[0].message);
+//   } else {
+//     next();
+//   }
+// });
 
-    if (user != "") {
-      if (user[0]._id != req.params.id) {
-        res.status(400).send("username is all ready exists");
-      } else {
-        try {
-          let usereedited = await User.findOneAndUpdate(
-            { _id: req.params.id },
-            {
-              username: req.body.username,
-              password: req.body.password,
-              firstname: req.body.firstname,
-              age: req.body.age || null,
-            }
-          );
-          if (usereedited != null) {
-            console.log(usereedited);
-            res.send("user editted");
-          } else {
-            res.status(400).send("user not found");
-          }
-        } catch (err) {
-          console.log(err);
-          res.status(500).send("some thing wrong try later");
-        }
-      }
-    } else {
-      try {
-        let usereedited = await User.findOneAndUpdate(
-          { _id: req.params.id },
-          {
-            username: req.body.username,
-            password: req.body.password,
-            firstname: req.body.firstname,
-            age: req.body.age || null,
-          }
-        );
-        if (usereedited != null) {
-          console.log(usereedited);
-          res.send("user editted");
-        } else {
-          res.status(400).send("user not found");
-        }
-      } catch (err) {
-        console.log(err);
-        res.status(500).send("some thing wrong try later");
-      }
-    }
-  } else {
-    res.status(400).send("user not found");
-  }
-});
+// router.patch("/:id", async (req, res, next) => {
+//   if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+//     let user = await User.find({ username: req.body.username });
+//     console.log(user);
 
-router.delete("/:id", async (req, res, next) => {
-  if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-    try {
-      let deleteduser = await User.deleteOne({ _id: req.params.id });
-      if (deleteduser.deletedCount != 0) {
-        console.log(deleteduser);
-        res.send("user deleted");
-      } else {
-        res.status(400).send("user not found");
-      }
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(500).send("some thing wrong try later");
-    }
-  } else {
-    res.status(400).send("user not found");
-  }
-});
+//     if (user != "") {
+//       if (user[0]._id != req.params.id) {
+//         res.status(400).send("username is all ready exists");
+//       } else {
+//         try {
+//           let usereedited = await User.findOneAndUpdate(
+//             { _id: req.params.id },
+//             {
+//               username: req.body.username,
+//               password: req.body.password,
+//               firstname: req.body.firstname,
+//               age: req.body.age || null,
+//             }
+//           );
+//           if (usereedited != null) {
+//             console.log(usereedited);
+//             res.send("user editted");
+//           } else {
+//             res.status(400).send("user not found");
+//           }
+//         } catch (err) {
+//           console.log(err);
+//           res.status(500).send("some thing wrong try later");
+//         }
+//       }
+//     } else {
+//       try {
+//         let usereedited = await User.findOneAndUpdate(
+//           { _id: req.params.id },
+//           {
+//             username: req.body.username,
+//             password: req.body.password,
+//             firstname: req.body.firstname,
+//             age: req.body.age || null,
+//           }
+//         );
+//         if (usereedited != null) {
+//           console.log(usereedited);
+//           res.send("user editted");
+//         } else {
+//           res.status(400).send("user not found");
+//         }
+//       } catch (err) {
+//         console.log(err);
+//         res.status(500).send("some thing wrong try later");
+//       }
+//     }
+//   } else {
+//     res.status(400).send("user not found");
+//   }
+// });
 
-router.get("/", async (req, res, next) => {
-  try {
-    const users = await User.find({}, { username: 1, firstname: 1, _id: 0 });
-    console.log(users);
-    res.send(users);
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500).send("some thing wrong try later");
-  }
-});
+// router.delete("/:id", async (req, res, next) => {
+//   if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+//     try {
+//       let deleteduser = await User.deleteOne({ _id: req.params.id });
+//       if (deleteduser.deletedCount != 0) {
+//         console.log(deleteduser);
+//         res.send("user deleted");
+//       } else {
+//         res.status(400).send("user not found");
+//       }
+//     } catch (err) {
+//       console.log(err);
+//       res.sendStatus(500).send("some thing wrong try later");
+//     }
+//   } else {
+//     res.status(400).send("user not found");
+//   }
+// });
+
+// router.get("/", async (req, res, next) => {
+//   try {
+//     const users = await User.find({}, { username: 1, firstname: 1, _id: 0 });
+//     console.log(users);
+//     res.send(users);
+//   } catch (err) {
+//     console.log(err);
+//     res.sendStatus(500).send("some thing wrong try later");
+//   }
+// });
 
 // router.delete("/logout", (req, res) => {
 //   refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
@@ -233,13 +236,6 @@ router.get("/", async (req, res, next) => {
 //     next();
 //   });
 // }
-
-// function to generateAccessToken
-function generateAccessToken(payload) {
-  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "900s",
-  });
-}
 
 // function to generateRefreshToken
 // function generateRefeshToken(payload) {

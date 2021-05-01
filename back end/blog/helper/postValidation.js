@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const postValidation = (data) => {
   const schema = Joi.object({
-    // userId: mongoose.Schema.Types.ObjectId,
+    userid: mongoose.Schema.Types.ObjectId,
     title: Joi.string().required().min(10).max(20),
 
     body: Joi.string().required().min(10).max(500),

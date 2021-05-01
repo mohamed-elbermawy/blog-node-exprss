@@ -40,16 +40,26 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
   try {
+    // console.log(req.body);
+    // console.log(req.payload);
+    let user = await User.find({ email: req.payload.email });
+    // console.log(user[0]._id);
+    if (!user) {
+      return res.status(400).send({ error: "some thing went wrong" });
+    }
+
     let post = new Post({
+      userid: mongoose.Types.ObjectId(user[0]._id),
       title: req.body.title,
       body: req.body.body,
       tags: req.body.tags || null,
     });
+
     post = await post.save();
-    // res.json({ stutus: "post is added succefully" });
-    res.redirect("http://localhost:3000/posts");
+
+    res.status(200).json({ massage: "post is added succefully" });
   } catch (err) {
     console.log(err);
     res.status(400).send({ error: "some thing went wrong" });
@@ -99,10 +109,10 @@ function authenticateToken(req, res, next) {
   if (token == null)
     return res.status(401).send({ error: "invalid credentials" });
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
     if (err) return res.status(401).send({ error: "invalid credentials" });
 
-    req.user = user;
+    req.payload = payload;
     next();
   });
 }
