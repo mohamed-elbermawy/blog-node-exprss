@@ -4,17 +4,10 @@ const Post = require("../models/post");
 const userValidation = require("../helper/userValidation");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
-
-router.patch("/:id", (req, res, next) => {
-  const { error } = userValidation.userValidation(req.body);
-  if (error) {
-    res.status(400).send(error.details[0].message);
-  } else {
-    next();
-  }
-});
 
 router.post("/register", (req, res, next) => {
   console.log(req.body);
@@ -38,14 +31,71 @@ router.post("/login", (req, res, next) => {
   }
 });
 
-router.get("/", async (req, res, next) => {
+router.post("/register", async (req, res, next) => {
   try {
-    const users = await User.find({}, { username: 1, firstname: 1, _id: 0 });
-    console.log(users);
-    res.send(users);
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    console.log(req.body);
+    let user = new User({
+      email: req.body.email,
+      password: hashedPassword,
+      firstname: req.body.firstName,
+      lastname: req.body.lastName,
+      gender: req.body.gender,
+    });
+    user = await user.save();
+    if (user != null) {
+      console.log(user);
+      res.redirect("http://localhost:3000/login");
+    } else {
+      res.redirect("http://localhost:3000/register");
+    }
+    // res.send("user registerd");
   } catch (err) {
     console.log(err);
-    res.sendStatus(500).send("some thing wrong try later");
+    res.redirect("http://localhost:3000/register");
+    // res.status(500).send("some thing wrong try later");
+  }
+});
+
+router.post("/login", async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    let user = await User.find({ email });
+    if (user != "") {
+      const match = await bcrypt.compare(password, user[0].password);
+      if (match) {
+        console.log(user);
+        // login and generate access token
+        const payload = {
+          email: user[0].email,
+          firstname: user[0].firstname,
+          lastname: user[0].lastname,
+        };
+        const accessToken = generateAccessToken(payload);
+        console.log(accessToken);
+        console.log("---------------------");
+        // res.json({ accessToken: accessToken });
+        res.redirect("http://localhost:3000/posts");
+      } else {
+        res.redirect("http://localhost:3000/login");
+      }
+    } else {
+      // res.status(401).send({ error: "invalid credentials" });
+      res.redirect("http://localhost:3000/login");
+    }
+  } catch (err) {
+    console.log(err);
+    // res.status(500).send("some thing wrong");
+    res.redirect("http://localhost:3000/login");
+  }
+});
+
+router.patch("/:id", (req, res, next) => {
+  const { error } = userValidation.userValidation(req.body);
+  if (error) {
+    res.status(400).send(error.details[0].message);
+  } else {
+    next();
   }
 });
 
@@ -125,64 +175,78 @@ router.delete("/:id", async (req, res, next) => {
   }
 });
 
-router.post("/register", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    console.log(req.body);
-    let user = new User({
-      email: req.body.email,
-      password: hashedPassword,
-      firstname: req.body.firstName,
-      lastname: req.body.lastName,
-      gender: req.body.gender,
-    });
-    user = await user.save();
-    if (user != null) {
-      console.log(user);
-      res.redirect("http://localhost:3000/login");
-    } else {
-      res.redirect("http://localhost:3000/register");
-    }
-    // res.send("user registerd");
+    const users = await User.find({}, { username: 1, firstname: 1, _id: 0 });
+    console.log(users);
+    res.send(users);
   } catch (err) {
     console.log(err);
-    res.redirect("http://localhost:3000/register");
-    // res.status(500).send("some thing wrong try later");
+    res.sendStatus(500).send("some thing wrong try later");
   }
 });
 
-router.post("/login", async (req, res, next) => {
-  const { email, password } = req.body;
-  try {
-    let user = await User.find({ email });
-    if (user != "") {
-      const match = await bcrypt.compare(password, user[0].password);
-      if (match) {
-        //login
-        res.redirect("http://localhost:3000/posts");
-      } else {
-        res.redirect("http://localhost:3000/login");
-      }
-      // const userId = user[0].id;
-      // let posts = await Post.find({ userId });
-      // if (posts == "") {
-      //   posts = "no posts yet";
-      // }
-      // console.log(user, user[0].id, posts);
-      // res.status(200).send({
-      //   message: "logged in successfully",
-      //   username: user[0].username,
-      //   latestPosts: posts,
-      // });
-    } else {
-      // res.status(401).send({ error: "invalid credentials" });
-      res.redirect("http://localhost:3000/login");
-    }
-  } catch (err) {
-    console.log(err);
-    // res.status(500).send("some thing wrong");
-    res.redirect("http://localhost:3000/login");
-  }
-});
+// let refreshTokens = [];
+
+// app.get("/post", authenticateToken, (req, res) => {
+//   res.json(posts.filter((post) => post.email === req.user.email));
+// });
+
+// app.post("/token", (req, res) => {
+//   const refreshToken = req.body.token;
+//   console.log(refreshToken);
+//   if (refreshToken == null) return res.sendStatus(401);
+//   if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+//   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+//     if (err) return res.sendStatus(403);
+//     const accessToken = generateAccessToken({ email: user.email });
+//     res.json({ accessToken: accessToken });
+//   });
+// });
+
+// app.delete("/logout", (req, res) => {
+//   refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
+//   res.sendStatus(204);
+// });
+
+// app.post("/login", (req, res) => {
+//1- Authenticate user
+
+//2- accessToken
+//   const email = req.body.email;
+//   const user = { email: email };
+//   const accessToken = generateAccessToken(user);
+//   const refreshToken = generateRefeshToken(user);
+//   refreshTokens.push(refreshToken);
+//   console.log(refreshTokens);
+//   res.json({ accessToken: accessToken, refreshToken: refreshToken });
+// });
+
+// middleware to authenticate Token
+// function authenticateToken(req, res, next) {
+//   const authHeader = req.headers["authorization"];
+//   const token = authHeader && authHeader.split(" ")[1];
+
+//   if (token == null) return res.sendStatus(401);
+
+//   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//     if (err) return res.sendStatus(403);
+
+//     req.user = user;
+//     next();
+//   });
+// }
+
+// function to generateAccessToken
+function generateAccessToken(payload) {
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "900s",
+  });
+}
+
+// function to generateRefreshToken
+// function generateRefeshToken(payload) {
+//   return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
+// }
 
 module.exports = router;
