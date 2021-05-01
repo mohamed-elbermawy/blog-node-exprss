@@ -56,21 +56,21 @@ function SingleBlogEdit() {
             method="post"
             action={"http://localhost:5000/posts/" + id + "?_method=PATCH"}
           >
-            <div class="form-group">
-              <label for="title">Post Title</label>
+            <div className="form-group">
+              <label htmlFor="title">Post Title</label>
               <input
                 type="text"
-                class="form-control"
+                className="form-control"
                 id="title"
                 name="title"
                 value={title}
                 onChange={handleTitleChange}
               />
             </div>
-            <div class="form-group">
-              <label for="body">Post Content</label>
+            <div className="form-group">
+              <label htmlFor="body">Post Content</label>
               <textarea
-                class="form-control"
+                className="form-control"
                 id="body"
                 rows="3"
                 name="body"
@@ -78,7 +78,7 @@ function SingleBlogEdit() {
                 onChange={handleBodyChange}
               ></textarea>
             </div>
-            <button type="submit" class="btn btn-primary form-control">
+            <button type="submit" className="btn btn-primary form-control">
               Update
             </button>
           </form>

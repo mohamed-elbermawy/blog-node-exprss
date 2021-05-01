@@ -13,8 +13,8 @@ router.post("/register", (req, res, next) => {
   console.log(req.body);
   const { error } = userValidation.userValidation(req.body);
   if (error) {
-    // res.status(400).send(error.details[0].message);
-    res.redirect("http://localhost:3000/register");
+    res.status(400).send(error.details[0].message);
+    // res.redirect("http://localhost:3000/register");
   } else {
     next();
   }
@@ -24,8 +24,8 @@ router.post("/login", (req, res, next) => {
   console.log(req.body);
   const { error } = userValidation.loginValidation(req.body);
   if (error) {
-    // res.status(400).send(error.details[0].message);
-    res.redirect("http://localhost:3000/login");
+    res.status(400).send(error.details[0].message);
+    // res.redirect("http://localhost:3000/login");
   } else {
     next();
   }
@@ -74,19 +74,16 @@ router.post("/login", async (req, res, next) => {
         const accessToken = generateAccessToken(payload);
         console.log(accessToken);
         console.log("---------------------");
-        // res.json({ accessToken: accessToken });
-        res.redirect("http://localhost:3000/posts");
+        res.json({ accessToken: accessToken });
       } else {
-        res.redirect("http://localhost:3000/login");
+        res.status(401).send({ error: "invalid credentials" });
       }
     } else {
-      // res.status(401).send({ error: "invalid credentials" });
-      res.redirect("http://localhost:3000/login");
+      res.status(401).send({ error: "invalid credentials" });
     }
   } catch (err) {
     console.log(err);
-    // res.status(500).send("some thing wrong");
-    res.redirect("http://localhost:3000/login");
+    res.status(500).send("some thing wrong");
   }
 });
 
@@ -186,6 +183,11 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// router.delete("/logout", (req, res) => {
+//   refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
+//   res.sendStatus(204);
+// });
+
 // let refreshTokens = [];
 
 // app.get("/post", authenticateToken, (req, res) => {
@@ -202,11 +204,6 @@ router.get("/", async (req, res, next) => {
 //     const accessToken = generateAccessToken({ email: user.email });
 //     res.json({ accessToken: accessToken });
 //   });
-// });
-
-// app.delete("/logout", (req, res) => {
-//   refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
-//   res.sendStatus(204);
 // });
 
 // app.post("/login", (req, res) => {

@@ -3,6 +3,8 @@ const Post = require("../models/post");
 const User = require("../models/user");
 const mongoose = require("mongoose");
 const postValidation = require("../helper/postValidation");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
@@ -24,14 +26,17 @@ router.patch(["/:id"], (req, res, next) => {
   }
 });
 
-router.get("/", async (req, res, next) => {
+router.get("/", async (req, res) => {
   try {
     let posts = await Post.find({}).sort({ createdAt: "desc" });
-    console.log(posts);
-    res.json(posts);
+    if (posts) {
+      res.status(200).json({ posts: posts });
+    } else {
+      res.status(500).json({ error: "some thing wrong try later" });
+    }
   } catch (err) {
     console.log(err);
-    res.sendStatus(500).send({ error: "some thing wrong try later" });
+    res.status(500).json({ error: "some thing wrong try later" });
   }
 });
 
@@ -87,5 +92,19 @@ router.get("/:id", async (req, res) => {
     res.json({ error: "some thing went wrrong!!" });
   }
 });
+
+// middleware to authenticate Token
+function authenticateToken(req, res, next) {
+  const token = req.headers["authorization"];
+  if (token == null)
+    return res.status(401).send({ error: "invalid credentials" });
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(401).send({ error: "invalid credentials" });
+
+    req.user = user;
+    next();
+  });
+}
 
 module.exports = router;
