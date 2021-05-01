@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+const axios = require("axios");
 
 function SingleBlogEdit() {
   let { id } = useParams();
@@ -8,19 +9,35 @@ function SingleBlogEdit() {
   let [body, setBody] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/posts/" + id)
-      .then(function (response) {
-        console.log(response);
-        return response.json();
+    axios
+      .get("http://localhost:5000/posts/", {
+        params: {
+          id: id,
+        },
       })
-      .then(function (myJson) {
-        setblog((blog = myJson));
-        console.log(blog);
-        setTitle((title = myJson)[0].title);
-        setBody((body = myJson)[0].body);
-        console.log(title);
-        console.log(body);
+      .then((response) => {
+        // handle success
+        setblog((blog = response.data));
+        setTitle((title = response.data[0].title));
+        setBody((body = response.data[0].body));
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
       });
+    // fetch("http://localhost:5000/posts/" + id)
+    //   .then(function (response) {
+    //     console.log(response);
+    //     return response.json();
+    //   })
+    //   .then(function (myJson) {
+    //     setblog((blog = myJson));
+    //     console.log(blog);
+    //     setTitle((title = myJson)[0].title);
+    //     setBody((body = myJson)[0].body);
+    //     console.log(title);
+    //     console.log(body);
+    //   });
   }, []);
 
   function handleTitleChange(event) {

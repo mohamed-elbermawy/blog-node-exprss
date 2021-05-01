@@ -1,18 +1,29 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+const axios = require("axios");
 
 function Blog() {
   let [blog, setblog] = useState([{}]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/posts")
-      .then(function (response) {
-        console.log(response);
-        return response.json();
+    axios
+      .get("http://localhost:5000/posts")
+      .then((response) => {
+        // handle success
+        setblog((blog = response.data));
       })
-      .then(function (myJson) {
-        setblog((blog = myJson));
+      .catch((error) => {
+        // handle error
+        console.log(error);
       });
+    // fetch("http://localhost:5000/posts")
+    //   .then(function (response) {
+    //     console.log(response);
+    //     return response.json();
+    //   })
+    //   .then(function (myJson) {
+    //     setblog((blog = myJson));
+    //   });
   }, []);
 
   return (
