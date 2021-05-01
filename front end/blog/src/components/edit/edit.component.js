@@ -1,0 +1,74 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
+
+function SingleBlogEdit() {
+  let { id } = useParams();
+  let [blog, setblog] = useState([{}]);
+  let [title, setTitle] = useState("");
+  let [body, setBody] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:5000/posts/" + id)
+      .then(function (response) {
+        console.log(response);
+        return response.json();
+      })
+      .then(function (myJson) {
+        setblog((blog = myJson));
+        console.log(blog);
+        setTitle((title = myJson)[0].title);
+        setBody((body = myJson)[0].body);
+        console.log(title);
+        console.log(body);
+      });
+  }, []);
+
+  function handleTitleChange(event) {
+    setTitle(event.target.value);
+  }
+
+  function handleBodyChange(event) {
+    setBody(event.target.value);
+  }
+
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col-6 offset-3 mt-5">
+          <form
+            method="post"
+            action={"http://localhost:5000/posts/" + id + "?_method=PATCH"}
+          >
+            <div class="form-group">
+              <label for="title">Post Title</label>
+              <input
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                value={title}
+                onChange={handleTitleChange}
+              />
+            </div>
+            <div class="form-group">
+              <label for="body">Post Content</label>
+              <textarea
+                class="form-control"
+                id="body"
+                rows="3"
+                name="body"
+                value={body}
+                onChange={handleBodyChange}
+              ></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary form-control">
+              Update
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default SingleBlogEdit;
