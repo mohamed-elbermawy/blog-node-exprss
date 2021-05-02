@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { useHistory } from "react-router-dom";
 const axios = require("axios");
 
 function SingleBlogEdit() {
+  let history = useHistory();
   let { id } = useParams();
   let [blog, setblog] = useState([{}]);
   let [title, setTitle] = useState("");
@@ -10,11 +12,7 @@ function SingleBlogEdit() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/posts/", {
-        params: {
-          id: id,
-        },
-      })
+      .get("http://localhost:5000/posts/" + id)
       .then((response) => {
         // handle success
         setblog((blog = response.data));
@@ -48,14 +46,34 @@ function SingleBlogEdit() {
     setBody(event.target.value);
   }
 
+  function handleSubmit(event) {
+    event.preventDefault();
+    axios
+      .patch(
+        "http://localhost:5000/posts/" + id,
+        {
+          title: title,
+          body: body,
+        },
+        {
+          headers: { authorization: localStorage.getItem("token") },
+        }
+      )
+      .then((response) => {
+        // handle success
+        history.push("/posts");
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
+      });
+  }
+
   return (
     <div className="container">
       <div className="row">
         <div className="col-6 offset-3 mt-5">
-          <form
-            method="post"
-            action={"http://localhost:5000/posts/" + id + "?_method=PATCH"}
-          >
+          <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="title">Post Title</label>
               <input

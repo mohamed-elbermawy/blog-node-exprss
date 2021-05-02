@@ -21,7 +21,8 @@ function App() {
   return (
     <>
       <Navbar />
-      <Route path="/emp" component={Emp} exact />
+      <Route path="/" component={Blog} exact />
+      {/*<Route path="/emp" component={Emp} exact />*/}
       <Route path="/emp/show/:id" component={Show} />
       <Route path="/posts" component={Blog} exact />
       <Route path="/login" component={Login} />

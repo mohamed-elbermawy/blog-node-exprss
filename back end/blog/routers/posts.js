@@ -66,18 +66,17 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authenticateToken, async (req, res, next) => {
   try {
     let deletedpost = await Post.deleteOne({ _id: req.params.id });
-    // res.json({ stutus: "post is deleted succefully" });
-    res.redirect("http://localhost:3000/posts");
+    res.status(200).json({ massage: "post is deleted succefully" });
   } catch (err) {
     console.log(err);
     res.status(400).send({ error: "some thing went wrong" });
   }
 });
 
-router.patch("/:id", async (req, res, next) => {
+router.patch("/:id", authenticateToken, async (req, res, next) => {
   try {
     let post = await Post.findByIdAndUpdate(req.params.id, {
       title: req.body.title,
@@ -85,8 +84,7 @@ router.patch("/:id", async (req, res, next) => {
       tags: req.body.tags || null,
       updatedAt: new Date(),
     });
-    // res.json({ stutus: "post is edited succefully" });
-    res.redirect("http://localhost:3000/posts");
+    res.status(200).json({ stutus: "post is edited succefully" });
   } catch (error) {
     res.json({ error: "some thing went wrrong!!" });
   }

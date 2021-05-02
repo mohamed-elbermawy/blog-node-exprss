@@ -63,19 +63,18 @@ function Blog() {
                   <div className="col-8">
                     <div className="card">
                       <div className="card-body">
-                        <h5 className="card-title">{post.title}</h5>
+                        <Link
+                          to={"/posts/single/" + post._id}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <h5 className="card-title">{post.title}</h5>
+                        </Link>
                         <h6 className="card-subtitle mb-2 text-muted">
                           {dateTime}
                         </h6>
                         <p className="card-text">{post.body}</p>
                       </div>
                       <div className="d-flex">
-                        <Link
-                          to={"/posts/single/" + post._id}
-                          className="btn btn-primary m-2"
-                        >
-                          Show
-                        </Link>
                         {token ? (
                           <>
                             <Link
@@ -84,21 +83,12 @@ function Blog() {
                             >
                               Edit
                             </Link>
-                            <form
-                              action={
-                                "http://localhost:5000/posts/" +
-                                post._id +
-                                "?_method=DELETE"
-                              }
-                              method="POST"
+                            <Link
+                              to={"/posts/single/delete/" + post._id}
+                              className="btn btn-danger m-2"
                             >
-                              <button
-                                className="btn btn-danger m-2"
-                                type="submit"
-                              >
-                                Delete
-                              </button>
-                            </form>
+                              Delete
+                            </Link>
                           </>
                         ) : null}
                       </div>

@@ -9,7 +9,7 @@ function Register() {
   let [password, setPassword] = useState("");
   let [firstname, setFirstname] = useState("");
   let [lastname, setLastname] = useState("");
-  let [gender, setGender] = useState("");
+  let [gender, setGender] = useState("Male");
 
   function handleSubmit(event) {
     event.preventDefault();

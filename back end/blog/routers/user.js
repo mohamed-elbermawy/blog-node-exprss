@@ -39,6 +39,7 @@ router.post("/register", async (req, res, next) => {
       firstname: req.body.firstName,
       lastname: req.body.lastName,
       gender: req.body.gender,
+      following: [],
     });
     user = await user.save();
     if (user != null) {

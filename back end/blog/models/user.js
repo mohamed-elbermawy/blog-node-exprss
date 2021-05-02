@@ -24,6 +24,7 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  following: [{ type: mongoose.Schema.Types.ObjectId }],
 });
 
 const User = mongoose.model("User", schema);
