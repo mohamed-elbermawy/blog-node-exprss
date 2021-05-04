@@ -6,25 +6,33 @@ function AddPost() {
   let history = useHistory();
   let [title, setTitle] = useState("");
   let [body, setBody] = useState("");
+  let [file, setFile] = useState("");
   let token = localStorage.getItem("token");
 
   function handleSubmit(event) {
     event.preventDefault();
-
+    let data = new FormData();
+    data.append("title", title);
+    data.append("body", body);
+    data.append("file", file);
     axios
       .post(
         "http://localhost:5000/posts",
-        {
-          title: title,
-          body: body,
-        },
+        // {
+        //   title: title,
+        //   body: body,
+        //   file: file,
+        // },
+        data,
         {
           headers: { authorization: token },
         }
       )
       .then((response) => {
         // handle success
-        history.push("/posts");
+        // console.log(response);
+        // history.push("/posts");
+        window.location.replace("http://localhost:3000/posts");
       })
       .catch((error) => {
         // handle error
@@ -38,6 +46,11 @@ function AddPost() {
 
   function handleBodyChange(event) {
     setBody(event.target.value);
+  }
+
+  function handleFileChange(event) {
+    const file = event.target.files[0];
+    setFile(file);
   }
 
   return (
@@ -64,6 +77,15 @@ function AddPost() {
                 name="body"
                 onChange={handleBodyChange}
               ></textarea>
+            </div>
+            <div className="form-group">
+              <input
+                className="form-control"
+                type="file"
+                id="file"
+                accept=".jpg"
+                onChange={handleFileChange}
+              ></input>
             </div>
             <button type="submit" className="btn btn-primary form-control">
               Add Post

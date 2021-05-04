@@ -56,8 +56,8 @@ function Blog() {
                   <div className="col-2">
                     <img
                       style={{ width: "150px", height: "100px" }}
-                      src="https://images.unsplash.com/photo-1571023479098-1ed95127545e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80"
-                      alt=""
+                      src={"images/posts/" + post.image}
+                      alt={post.image}
                     />
                   </div>
                   <div className="col-8">

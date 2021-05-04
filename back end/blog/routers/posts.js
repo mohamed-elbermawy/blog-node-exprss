@@ -5,17 +5,27 @@ const mongoose = require("mongoose");
 const postValidation = require("../helper/postValidation");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const fs = require("fs");
+const { promisify } = require("util");
+const pipeline = promisify(require("stream").pipeline);
 
 const router = express.Router();
 
-router.post(["/"], (req, res, next) => {
-  const { error } = postValidation.postValidation(req.body);
-  if (error) {
-    res.status(400).send(error.details[0].message);
-  } else {
-    next();
+const upload = new multer();
+router.post(
+  ["/"],
+  authenticateToken,
+  upload.single("file"),
+  (req, res, next) => {
+    const { error } = postValidation.postValidation(req.body);
+    if (error) {
+      res.status(400).send(error.details[0].message);
+    } else {
+      next();
+    }
   }
-});
+);
 
 router.patch(["/:id"], (req, res, next) => {
   const { error } = postValidation.postValidation(req.body);
@@ -40,26 +50,53 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", authenticateToken, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    // console.log(req.body);
-    // console.log(req.payload);
     let user = await User.find({ email: req.payload.email });
-    // console.log(user[0]._id);
+
     if (!user) {
       return res.status(400).send({ error: "some thing went wrong" });
+    }
+
+    const {
+      file,
+      body: { title, body },
+    } = req;
+
+    let filename = "default_post.jpg";
+
+    if (file) {
+      if (
+        file.detectedFileExtension == ".jpg" ||
+        file.detectedFileExtension == ".png"
+      ) {
+        filename =
+          title + Math.floor(Math.random() * 1000) + file.detectedFileExtension;
+
+        await pipeline(
+          file.stream,
+          fs.createWriteStream(
+            `${__dirname}/../../../front end/blog/public/images/posts/${filename}`
+          )
+        );
+      } else {
+        return res.status(500).send({ error: "invalid file type" });
+      }
     }
 
     let post = new Post({
       userid: mongoose.Types.ObjectId(user[0]._id),
       title: req.body.title,
       body: req.body.body,
+      image: filename,
       tags: req.body.tags || null,
     });
 
     post = await post.save();
 
-    res.status(200).json({ massage: "post is added succefully" });
+    if (post) {
+      res.status(200).json({ massage: "post is added succefully" });
+    }
   } catch (err) {
     console.log(err);
     res.status(400).send({ error: "some thing went wrong" });

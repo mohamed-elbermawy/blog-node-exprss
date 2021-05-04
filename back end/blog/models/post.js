@@ -6,19 +6,19 @@ const schema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    minLength: 10,
-    maxLength: 20,
+    minLength: 3,
   },
   body: {
     type: String,
     required: true,
-    minLength: 10,
-    maxLength: 500,
+    minLength: 3,
+  },
+  image: {
+    type: String,
   },
   tags: [
     {
       type: String,
-      maxLength: 10,
     },
   ],
   createdAt: {
