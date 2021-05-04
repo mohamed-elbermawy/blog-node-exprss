@@ -36,10 +36,27 @@ router.patch(["/:id"], (req, res, next) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", authenticateToken, async (req, res) => {
   try {
-    let posts = await Post.find({}).sort({ createdAt: "desc" });
+    let user = await User.find({ email: req.payload.email });
+
+    if (!user) {
+      return res.status(400).send({ error: "some thing went wrong" });
+    }
+
+    let posts = await Post.find({})
+      .sort({ createdAt: "desc" })
+      .populate({ path: "userid", select: ["_id", "firstname", "lastname"] });
+
     if (posts) {
+      for (let i = 0; i < posts.length; i++) {
+        if (posts[i].userid._id.toString() == user[0]._id.toString()) {
+          posts[i]._doc = { ...posts[i]._doc, flag: "true" };
+        } else {
+          posts[i]._doc = { ...posts[i]._doc, flag: "false" };
+        }
+      }
+      console.log(posts);
       res.status(200).json({ posts: posts });
     } else {
       res.status(500).json({ error: "some thing wrong try later" });
@@ -60,10 +77,15 @@ router.post("/", async (req, res) => {
 
     const {
       file,
-      body: { title, body },
+      body: { title, body, tags },
     } = req;
 
     let filename = "default_post.jpg";
+
+    let tags_array = [];
+    if (tags) {
+      tags_array = tags.split(",");
+    }
 
     if (file) {
       if (
@@ -89,7 +111,7 @@ router.post("/", async (req, res) => {
       title: req.body.title,
       body: req.body.body,
       image: filename,
-      tags: req.body.tags || null,
+      tags: tags_array,
     });
 
     post = await post.save();
@@ -115,10 +137,14 @@ router.delete("/:id", authenticateToken, async (req, res, next) => {
 
 router.patch("/:id", authenticateToken, async (req, res, next) => {
   try {
+    let tags_array = [];
+    if (req.body.tags) {
+      tags_array = req.body.tags.split(",");
+    }
     let post = await Post.findByIdAndUpdate(req.params.id, {
       title: req.body.title,
       body: req.body.body,
-      tags: req.body.tags || null,
+      tags: tags_array,
       updatedAt: new Date(),
     });
     res.status(200).json({ stutus: "post is edited succefully" });

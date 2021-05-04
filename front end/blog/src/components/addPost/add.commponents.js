@@ -7,14 +7,17 @@ function AddPost() {
   let [title, setTitle] = useState("");
   let [body, setBody] = useState("");
   let [file, setFile] = useState("");
+  let [tags, setTags] = useState("");
   let token = localStorage.getItem("token");
 
   function handleSubmit(event) {
     event.preventDefault();
+    console.log(tags);
     let data = new FormData();
     data.append("title", title);
     data.append("body", body);
     data.append("file", file);
+    data.append("tags", tags);
     axios
       .post(
         "http://localhost:5000/posts",
@@ -53,6 +56,10 @@ function AddPost() {
     setFile(file);
   }
 
+  function handleTagsChange(event) {
+    setTags(event.target.value);
+  }
+
   return (
     <div className="container">
       <div className="row">
@@ -85,7 +92,17 @@ function AddPost() {
                 id="file"
                 accept=".jpg"
                 onChange={handleFileChange}
-              ></input>
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="tags">Tags will be splited using (,)</label>
+              <input
+                className="form-control"
+                type="text"
+                id="tags"
+                name="tags"
+                onChange={handleTagsChange}
+              />
             </div>
             <button type="submit" className="btn btn-primary form-control">
               Add Post

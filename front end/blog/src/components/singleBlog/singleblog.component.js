@@ -44,6 +44,22 @@ function SingleBlog() {
                       {dateTime}
                     </h6>
                     <p className="card-text">{post.body}</p>
+                    {post.tags ? (
+                      <>
+                        {post.tags.map((tag) => (
+                          <span
+                            style={{
+                              marginLeft: "5px",
+                              backgroundColor: "#bfbbbb",
+                              padding: "5px",
+                              borderRadius: "20px",
+                            }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </>
+                    ) : null}
                   </div>
                 </div>
               </div>

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const User = require("./user");
 
 const schema = new mongoose.Schema({
   userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

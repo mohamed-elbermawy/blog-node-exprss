@@ -9,8 +9,6 @@ const postValidation = (data) => {
     body: Joi.string().required().min(3),
 
     image: Joi.string(),
-
-    tags: Joi.array().items(Joi.string()),
   }).unknown();
 
   return schema.validate(data);

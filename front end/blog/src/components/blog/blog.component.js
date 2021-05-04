@@ -73,23 +73,54 @@ function Blog() {
                           {dateTime}
                         </h6>
                         <p className="card-text">{post.body}</p>
+                        {post.tags ? (
+                          <>
+                            {post.tags.map((tag) => (
+                              <span
+                                style={{
+                                  marginLeft: "5px",
+                                  backgroundColor: "#bfbbbb",
+                                  padding: "5px",
+                                  borderRadius: "20px",
+                                }}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </>
+                        ) : null}
+                        <p className="card-subtitle mt-2 text-muted">
+                          <span>Author:</span>
+                          <span>
+                            {" " +
+                              post.userid.firstname +
+                              " " +
+                              post.userid.lastname}
+                          </span>
+                        </p>
                       </div>
                       <div className="d-flex">
                         {token ? (
-                          <>
-                            <Link
-                              to={"/posts/single/edit/" + post._id}
-                              className="btn btn-secondary m-2"
-                            >
-                              Edit
+                          post.flag === "true" ? (
+                            <>
+                              <Link
+                                to={"/posts/single/edit/" + post._id}
+                                className="btn btn-secondary m-2"
+                              >
+                                Edit
+                              </Link>
+                              <Link
+                                to={"/posts/single/delete/" + post._id}
+                                className="btn btn-danger m-2"
+                              >
+                                Delete
+                              </Link>
+                            </>
+                          ) : (
+                            <Link to={""} className="btn btn-danger m-2">
+                              Follow
                             </Link>
-                            <Link
-                              to={"/posts/single/delete/" + post._id}
-                              className="btn btn-danger m-2"
-                            >
-                              Delete
-                            </Link>
-                          </>
+                          )
                         ) : null}
                       </div>
                     </div>

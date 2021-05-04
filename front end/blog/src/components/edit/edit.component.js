@@ -9,6 +9,7 @@ function SingleBlogEdit() {
   let [blog, setblog] = useState([{}]);
   let [title, setTitle] = useState("");
   let [body, setBody] = useState("");
+  let [tags, setTags] = useState("");
 
   useEffect(() => {
     axios
@@ -18,6 +19,9 @@ function SingleBlogEdit() {
         setblog((blog = response.data));
         setTitle((title = response.data[0].title));
         setBody((body = response.data[0].body));
+        if (response.data[0].tags) {
+          setTags((tags = response.data[0].tags.toString()));
+        }
       })
       .catch((error) => {
         // handle error
@@ -46,6 +50,9 @@ function SingleBlogEdit() {
     setBody(event.target.value);
   }
 
+  function handleTagsChange(event) {
+    setTags(event.target.value);
+  }
   function handleSubmit(event) {
     event.preventDefault();
     axios
@@ -54,6 +61,7 @@ function SingleBlogEdit() {
         {
           title: title,
           body: body,
+          tags: tags,
         },
         {
           headers: { authorization: localStorage.getItem("token") },
@@ -95,6 +103,17 @@ function SingleBlogEdit() {
                 value={body}
                 onChange={handleBodyChange}
               ></textarea>
+            </div>
+            <div className="form-group">
+              <label htmlFor="tags">Tags will be splited using (,)</label>
+              <input
+                className="form-control"
+                type="text"
+                id="tags"
+                name="tags"
+                value={tags}
+                onChange={handleTagsChange}
+              />
             </div>
             <button type="submit" className="btn btn-primary form-control">
               Update
