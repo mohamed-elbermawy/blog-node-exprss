@@ -29,6 +29,24 @@ function Blog() {
     //   });
   }, []);
 
+  function handleFollowing(id) {
+    axios
+      .get("http://localhost:5000/users/following/" + id, {
+        headers: {
+          authorization: token,
+        },
+      })
+      .then((response) => {
+        // handle success
+        console.log(response);
+        // setblog((blog = response.data.posts));
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
+      });
+  }
+
   return (
     <div className="container">
       {token ? (
@@ -117,9 +135,14 @@ function Blog() {
                               </Link>
                             </>
                           ) : (
-                            <Link to={""} className="btn btn-danger m-2">
+                            <button
+                              className="btn btn-danger m-2"
+                              onClick={() => {
+                                handleFollowing(post.userid._id);
+                              }}
+                            >
                               Follow
-                            </Link>
+                            </button>
                           )
                         ) : null}
                       </div>

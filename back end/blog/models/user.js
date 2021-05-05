@@ -1,3 +1,4 @@
+const { string } = require("joi");
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
@@ -24,7 +25,7 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  following: [{ type: mongoose.Schema.Types.ObjectId }],
+  following: [{ type: String }],
 });
 
 const User = mongoose.model("User", schema);

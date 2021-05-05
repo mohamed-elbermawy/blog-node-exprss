@@ -164,9 +164,22 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/search/:key/:value", async (req, res) => {
+  try {
+    console.log(req.params);
+    // let post = await Post.find({
+    //   _id: mongoose.Types.ObjectId(req.params.id),
+    // });
+    // res.json(post);
+  } catch (error) {
+    res.json({ error: "some thing went wrrong!!" });
+  }
+});
+
 // middleware to authenticate Token
 function authenticateToken(req, res, next) {
   const token = req.headers["authorization"];
+  console.log(req.headers);
   if (token == null)
     return res.status(401).send({ error: "invalid credentials" });
 

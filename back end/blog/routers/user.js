@@ -84,10 +84,57 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+router.get("/following/:id", authenticateToken, async (req, res, next) => {
+  try {
+    id = req.params.id;
+    let user = await User.find({ email: req.payload.email });
+    if (!user) {
+      return res.status(400).send({ error: "some thing went wrong" });
+    }
+
+    if (user[0].following) {
+      if (user[0].following.includes(id)) {
+        index = user[0].following.indexOf(id);
+        user[0].following.splice(index, 1);
+      } else {
+        user[0].following.push(id);
+      }
+    } else {
+      user[0].following.push(id);
+    }
+
+    let updateduser = await User.findByIdAndUpdate(
+      { _id: user[0]._id },
+      { following: user[0].following }
+    );
+    if (updateduser) {
+      console.log(user[0]);
+      return res.status(200).send({ massage: "done" });
+    }
+  } catch (error) {
+    return res.status(500).send({ error: "some thing went wrong" });
+  }
+});
+
 // function to generateAccessToken
 function generateAccessToken(payload) {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: "7d",
+  });
+}
+
+// middleware to authenticate Token
+function authenticateToken(req, res, next) {
+  const token = req.headers["authorization"];
+  // console.log(req.headers);
+  if (token == null)
+    return res.status(401).send({ error: "invalid credentials" });
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
+    if (err) return res.status(401).send({ error: "invalid credentials" });
+
+    req.payload = payload;
+    next();
   });
 }
 
