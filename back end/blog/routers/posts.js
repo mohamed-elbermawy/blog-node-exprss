@@ -44,6 +44,8 @@ router.get("/", authenticateToken, async (req, res) => {
       return res.status(400).send({ error: "some thing went wrong" });
     }
 
+    const following = user[0].following;
+
     let posts = await Post.find({})
       .sort({ createdAt: "desc" })
       .populate({ path: "userid", select: ["_id", "firstname", "lastname"] });
@@ -53,7 +55,11 @@ router.get("/", authenticateToken, async (req, res) => {
         if (posts[i].userid._id.toString() == user[0]._id.toString()) {
           posts[i]._doc = { ...posts[i]._doc, flag: "true" };
         } else {
-          posts[i]._doc = { ...posts[i]._doc, flag: "false" };
+          if (following.includes(posts[i].userid._id.toString())) {
+            posts[i]._doc = { ...posts[i]._doc, follow: "true" };
+          } else {
+            posts[i]._doc = { ...posts[i]._doc, follow: "false" };
+          }
         }
       }
       console.log(posts);

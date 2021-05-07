@@ -39,7 +39,8 @@ function Blog() {
       })
       .then((response) => {
         // handle success
-        console.log(response);
+        // console.log(response);
+        window.location.replace("http://localhost:3000/posts");
         // setblog((blog = response.data.posts));
       })
       .catch((error) => {
@@ -142,7 +143,7 @@ function Blog() {
                                 handleFollowing(post.userid._id);
                               }}
                             >
-                              Follow
+                              {post.follow === "true" ? "Unfollow" : "Follow"}
                             </button>
                           )
                         ) : null}
