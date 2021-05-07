@@ -44,6 +44,13 @@ function Navbar() {
                 </Link>
               </li>
             ) : null}
+            {token ? (
+              <li className="nav-item active">
+                <Link className="nav-link" to="/profile">
+                  PROFILE
+                </Link>
+              </li>
+            ) : null}
           </ul>
           {token ? (
             <Link

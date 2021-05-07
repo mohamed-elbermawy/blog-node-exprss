@@ -16,6 +16,7 @@ import AddPost from "./components/addPost/add.commponents";
 import DeletePost from "./components/deletePost/delete.component";
 import Emp from "./components/test/emp.component";
 import Show from "./components/test/show.component";
+import Profile from "./components/profile/profile.component";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
       <Route path="/register" component={Register} />
       <Route path="/search" component={Search} />
       <Route path="/followers_says" component={Says} />
+      <Route path="/profile" component={Profile} />
       <Route path="/posts/addpost" component={AddPost} />
       <Route path="/posts/single/:id" component={SingleBlog} exact />
       <Route path="/posts/single/edit/:id" component={SingleBlogEdit} />

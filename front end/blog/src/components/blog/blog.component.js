@@ -40,7 +40,7 @@ function Blog() {
       .then((response) => {
         // handle success
         console.log(response);
-        setblog((blog = response.data.posts));
+        // setblog((blog = response.data.posts));
       })
       .catch((error) => {
         // handle error

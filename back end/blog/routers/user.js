@@ -116,6 +116,18 @@ router.get("/following/:id", authenticateToken, async (req, res, next) => {
   }
 });
 
+router.get("/profile", authenticateToken, async (req, res, next) => {
+  try {
+    let user = await User.find({ email: req.payload.email });
+    if (!user) {
+      return res.status(400).send({ error: "some thing went wrong" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).send({ error: "some thing went wrong" });
+  }
+});
+
 // function to generateAccessToken
 function generateAccessToken(payload) {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
