@@ -155,7 +155,7 @@ function Profile() {
                       </span>
                     </p>
                     <Link
-                      to=""
+                      to={"/profile/edit/" + user._id}
                       className="btn btn-success"
                       style={{
                         position: "absolute",

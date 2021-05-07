@@ -128,6 +128,39 @@ router.get("/profile", authenticateToken, async (req, res, next) => {
   }
 });
 
+router.get("/userProfile/:id", async (req, res) => {
+  try {
+    let user = await User.find({ _id: req.params.id });
+    if (!user) {
+      return res.status(400).send({ error: "some thing went wrong" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).send({ error: "some thing went wrong" });
+  }
+});
+
+router.patch("/edit/:id", async (req, res) => {
+  try {
+    let usereedited = await User.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+      }
+    );
+    if (usereedited) {
+      console.log(usereedited);
+      res.send("user editted");
+    } else {
+      res.status(400).send("user not found");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("some thing wrong try later");
+  }
+});
+
 // function to generateAccessToken
 function generateAccessToken(payload) {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
