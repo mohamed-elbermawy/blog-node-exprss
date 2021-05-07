@@ -12,8 +12,9 @@ function Blog() {
       })
       .then((response) => {
         // handle success
-        console.log(response);
+        // console.log(response.data);
         setblog((blog = response.data.posts));
+        console.log(blog);
       })
       .catch((error) => {
         // handle error
@@ -39,7 +40,7 @@ function Blog() {
       .then((response) => {
         // handle success
         console.log(response);
-        // setblog((blog = response.data.posts));
+        setblog((blog = response.data.posts));
       })
       .catch((error) => {
         // handle error

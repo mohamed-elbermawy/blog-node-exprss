@@ -83,8 +83,11 @@ router.post("/", async (req, res) => {
     let filename = "default_post.jpg";
 
     let tags_array = [];
-    if (tags) {
-      tags_array = tags.split(",");
+    if (req.body.tags) {
+      tags_array_splited = req.body.tags.split(",");
+      tags_array_splited.map((tag) => {
+        tags_array.push(tag.trim());
+      });
     }
 
     if (file) {
@@ -139,7 +142,10 @@ router.patch("/:id", authenticateToken, async (req, res, next) => {
   try {
     let tags_array = [];
     if (req.body.tags) {
-      tags_array = req.body.tags.split(",");
+      tags_array_splited = req.body.tags.split(",");
+      tags_array_splited.map((tag) => {
+        tags_array.push(tag.trim());
+      });
     }
     let post = await Post.findByIdAndUpdate(req.params.id, {
       title: req.body.title,
@@ -157,7 +163,8 @@ router.get("/:id", async (req, res) => {
   try {
     let post = await Post.find({
       _id: mongoose.Types.ObjectId(req.params.id),
-    });
+    }).populate({ path: "userid", select: ["_id", "firstname", "lastname"] });
+    console.log(post);
     res.json(post);
   } catch (error) {
     res.json({ error: "some thing went wrrong!!" });
@@ -166,20 +173,38 @@ router.get("/:id", async (req, res) => {
 
 router.get("/search/:key/:value", async (req, res) => {
   try {
-    console.log(req.params);
-    // let post = await Post.find({
-    //   _id: mongoose.Types.ObjectId(req.params.id),
-    // });
-    // res.json(post);
+    if (req.params.key === "tags") {
+      let posts = await Post.find({
+        tags: req.params.value.trim(),
+      }).populate({ path: "userid", select: ["_id", "firstname", "lastname"] });
+      console.log(posts);
+      if (posts) {
+        res.status(200).json({ posts: posts });
+      } else {
+        res.status(400).json({ error: "nothing!!" });
+      }
+    } else if (req.params.key === "title") {
+      let posts = await Post.find({
+        title: req.params.value.trim(),
+      }).populate({ path: "userid", select: ["_id", "firstname", "lastname"] });
+      console.log(posts);
+      if (posts) {
+        res.status(200).json({ posts: posts });
+      } else {
+        res.status(400).json({ error: "nothing!!" });
+      }
+    } else {
+      res.status(400).json({ error: "some thing went wrrong!!" });
+    }
   } catch (error) {
-    res.json({ error: "some thing went wrrong!!" });
+    res.status(400).json({ error: "some thing went wrrong!!" });
   }
 });
 
 // middleware to authenticate Token
 function authenticateToken(req, res, next) {
   const token = req.headers["authorization"];
-  console.log(req.headers);
+  // console.log(req.headers);
   if (token == null)
     return res.status(401).send({ error: "invalid credentials" });
 

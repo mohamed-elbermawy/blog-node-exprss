@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 const axios = require("axios");
 
 function Search() {
+  let [blog, setblog] = useState([]);
   let [key, setKey] = useState("");
   let [value, setValue] = useState("");
-  let [blogs, setBlogs] = useState([]);
+  let token = localStorage.getItem("token");
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -17,8 +19,9 @@ function Search() {
       )
       .then((response) => {
         // handle success
-        console.log(response);
-        // setBlogs((blogs = response.data.posts));
+        // console.log(response.data.posts);
+        setblog((blog = response.data.posts));
+        console.log(blog);
       })
       .catch((error) => {
         // handle error
@@ -48,7 +51,7 @@ function Search() {
               >
                 <option>Select key To Search With</option>
                 <option value="tags">Tags</option>
-                <option value="name">Name</option>
+                <option value="title">Title</option>
               </select>
             </div>
             <div className="form-group col-4">
@@ -69,6 +72,74 @@ function Search() {
           </form>
         </div>
       </div>
+      {blog.length !== 0
+        ? blog.map((post) => {
+            let day = new Date(post.createdAt);
+            let date =
+              day.getFullYear() +
+              "-" +
+              (day.getMonth() + 1) +
+              "-" +
+              day.getDate();
+            let time =
+              day.getHours() + ":" + day.getMinutes() + ":" + day.getSeconds();
+            let dateTime = date + " " + time;
+            return (
+              <div className="row">
+                <div className="d-flex col-10 offset-1 mt-4">
+                  <div className="col-2">
+                    <img
+                      style={{ width: "150px", height: "100px" }}
+                      src={"images/posts/" + post.image}
+                      alt={post.image}
+                    />
+                  </div>
+                  <div className="col-8">
+                    <div className="card">
+                      <div className="card-body">
+                        <Link
+                          to={"/posts/single/" + post._id}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <h5 className="card-title">{post.title}</h5>
+                        </Link>
+                        <h6 className="card-subtitle mb-2 text-muted">
+                          {dateTime}
+                        </h6>
+                        <p className="card-text">{post.body}</p>
+                        {post.tags ? (
+                          <>
+                            {post.tags.map((tag) => (
+                              <span
+                                style={{
+                                  marginLeft: "5px",
+                                  backgroundColor: "#bfbbbb",
+                                  padding: "5px",
+                                  borderRadius: "20px",
+                                }}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </>
+                        ) : null}
+                        <p className="card-subtitle mt-2 text-muted">
+                          <span>Author:</span>
+                          <span>
+                            {" " +
+                              post.userid.firstname +
+                              " " +
+                              post.userid.lastname}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        : null}
     </div>
   );
 }
