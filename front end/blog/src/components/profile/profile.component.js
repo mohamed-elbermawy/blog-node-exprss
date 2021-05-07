@@ -129,7 +129,10 @@ function Profile() {
     </div>*/
 
     <div className="container">
-      <div className="row">
+      <div
+        className="row aler alert alert- alert-dark mt-5"
+        style={{ height: "350px" }}
+      >
         {users.length !== 0
           ? users.map((user) => {
               return (
@@ -160,7 +163,8 @@ function Profile() {
                       style={{
                         position: "absolute",
                         marginTop: "200px",
-                        marginLeft: "65px",
+                        marginLeft: "55px",
+                        width: "80px",
                       }}
                     >
                       Edit
