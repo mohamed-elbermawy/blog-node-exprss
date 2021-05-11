@@ -86,14 +86,18 @@ function AddPost() {
                 onChange={handleBodyChange}
               ></textarea>
             </div>
-            <div className="form-group">
+            <div className="custom-file">
               <input
-                className="form-control"
                 type="file"
-                id="file"
+                className="custom-file__input"
+                id="field-upload"
+                name="upload"
                 accept=".jpg"
                 onChange={handleFileChange}
               />
+              <label className="custom-file__label" for="field-upload">
+                Upload Post Image
+              </label>
             </div>
             <div className="form-group">
               <label htmlFor="tags">Tags will be splited using (,)</label>
