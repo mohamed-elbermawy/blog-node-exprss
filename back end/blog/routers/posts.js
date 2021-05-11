@@ -73,36 +73,57 @@ router.get("/followingSays", authenticateToken, async (req, res) => {
   }
 });
 
-router.get("/", authenticateToken, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    let user = await User.find({ email: req.payload.email });
+    const token = req.headers["authorization"];
+    // console.log(req.headers);
+    if (token == "null") {
+      let posts = await Post.find({})
+        .sort({ createdAt: "desc" })
+        .populate({
+          path: "userid",
+          select: ["_id", "firstname", "lastname"],
+        });
+      console.log(posts);
+      return res.status(200).json({ posts: posts });
+    } else {
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
+        if (err) return res.status(401).send({ error: "invalid credentials" });
+        req.payload = payload;
+      });
 
-    if (!user) {
-      return res.status(400).send({ error: "some thing went wrong" });
-    }
+      let user = await User.find({ email: req.payload.email });
 
-    const following = user[0].following;
+      if (!user) {
+        return res.status(400).send({ error: "some thing went wrong" });
+      }
 
-    let posts = await Post.find({})
-      .sort({ createdAt: "desc" })
-      .populate({ path: "userid", select: ["_id", "firstname", "lastname"] });
+      const following = user[0].following;
 
-    if (posts) {
-      for (let i = 0; i < posts.length; i++) {
-        if (posts[i].userid._id.toString() == user[0]._id.toString()) {
-          posts[i]._doc = { ...posts[i]._doc, flag: "true" };
-        } else {
-          if (following.includes(posts[i].userid._id.toString())) {
-            posts[i]._doc = { ...posts[i]._doc, follow: "true" };
+      let posts = await Post.find({})
+        .sort({ createdAt: "desc" })
+        .populate({
+          path: "userid",
+          select: ["_id", "firstname", "lastname"],
+        });
+
+      if (posts) {
+        for (let i = 0; i < posts.length; i++) {
+          if (posts[i].userid._id.toString() == user[0]._id.toString()) {
+            posts[i]._doc = { ...posts[i]._doc, flag: "true" };
           } else {
-            posts[i]._doc = { ...posts[i]._doc, follow: "false" };
+            if (following.includes(posts[i].userid._id.toString())) {
+              posts[i]._doc = { ...posts[i]._doc, follow: "true" };
+            } else {
+              posts[i]._doc = { ...posts[i]._doc, follow: "false" };
+            }
           }
         }
+        console.log(posts);
+        res.status(200).json({ posts: posts });
+      } else {
+        res.status(500).json({ error: "some thing wrong try later" });
       }
-      console.log(posts);
-      res.status(200).json({ posts: posts });
-    } else {
-      res.status(500).json({ error: "some thing wrong try later" });
     }
   } catch (err) {
     console.log(err);
@@ -260,3 +281,40 @@ function authenticateToken(req, res, next) {
 }
 
 module.exports = router;
+
+// router.get("/", authenticateToken, async (req, res) => {
+//   try {
+//     let user = await User.find({ email: req.payload.email });
+
+//     if (!user) {
+//       return res.status(400).send({ error: "some thing went wrong" });
+//     }
+
+//     const following = user[0].following;
+
+//     let posts = await Post.find({})
+//       .sort({ createdAt: "desc" })
+//       .populate({ path: "userid", select: ["_id", "firstname", "lastname"] });
+
+//     if (posts) {
+//       for (let i = 0; i < posts.length; i++) {
+//         if (posts[i].userid._id.toString() == user[0]._id.toString()) {
+//           posts[i]._doc = { ...posts[i]._doc, flag: "true" };
+//         } else {
+//           if (following.includes(posts[i].userid._id.toString())) {
+//             posts[i]._doc = { ...posts[i]._doc, follow: "true" };
+//           } else {
+//             posts[i]._doc = { ...posts[i]._doc, follow: "false" };
+//           }
+//         }
+//       }
+//       console.log(posts);
+//       res.status(200).json({ posts: posts });
+//     } else {
+//       res.status(500).json({ error: "some thing wrong try later" });
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "some thing wrong try later" });
+//   }
+// });
