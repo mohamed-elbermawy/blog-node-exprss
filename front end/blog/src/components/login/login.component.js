@@ -8,6 +8,7 @@ function Login() {
   let history = useHistory();
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -28,6 +29,7 @@ function Login() {
       .catch((error) => {
         // handle error
         console.log(error);
+        setError(error);
       });
   }
 
@@ -42,7 +44,15 @@ function Login() {
   return (
     <div className="container">
       <div className="row">
-        <div className="col-4 mt-5 offset-4" id="mainwrapper">
+        <div className="col-6 mt-5 offset-3" id="mainwrapper">
+          {error ? (
+            <div className="alert alert-danger">
+              <span>
+                Email or Password doesn't correct Please Check it and Try again
+                !!!
+              </span>
+            </div>
+          ) : null}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email">Email address</label>

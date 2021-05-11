@@ -10,11 +10,12 @@ function Register() {
   let [password, setPassword] = useState("");
   let [firstname, setFirstname] = useState("");
   let [lastname, setLastname] = useState("");
-  let [gender, setGender] = useState("Male");
+  let [gender, setGender] = useState("");
   const [emailerror, setEmailerror] = useState({});
   const [passworderror, setPassworderror] = useState({});
   const [firstnameerror, setFirstnameerror] = useState({});
   const [lastnameerror, setLastnameerror] = useState({});
+  const [gendererror, setGendererror] = useState({});
   const [duplicateemail, setDuplicateemailerror] = useState("");
 
   const mailformat =
@@ -54,6 +55,7 @@ function Register() {
     const firstnameError = {};
     const lastnameError = {};
     const passwordError = {};
+    const genderError = {};
 
     if (!email.trim().match(mailformat)) {
       emailError.emailerror =
@@ -62,7 +64,7 @@ function Register() {
     }
 
     if (password.trim() === "") {
-      passwordError.passworderror = "Password Required!!!";
+      passwordError.passworderror = "Password is Required!!!";
       isValid = false;
     }
 
@@ -84,10 +86,16 @@ function Register() {
       isValid = false;
     }
 
+    if (gender.trim() === "") {
+      genderError.gendererror = "Gender is Required!!!";
+      isValid = false;
+    }
+
     setEmailerror(emailError);
     setPassworderror(passwordError);
     setFirstnameerror(firstnameError);
     setLastnameerror(lastnameError);
+    setGendererror(genderError);
 
     return isValid;
   };
@@ -115,7 +123,7 @@ function Register() {
   return (
     <div className="container">
       <div className="row">
-        <div className="col-4 mt-5 offset-4" id="mainwrapper">
+        <div className="col-6 mt-5 offset-3" id="mainwrapper">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               {Object.keys(firstnameerror).map((key) => {
@@ -195,6 +203,13 @@ function Register() {
               />
             </div>
             <div className="form-group">
+              {Object.keys(gendererror).map((key) => {
+                return (
+                  <div className="alert alert-danger">
+                    <span>{gendererror[key]}</span>
+                  </div>
+                );
+              })}
               <label htmlFor="gender">gender</label>
               <select
                 class="form-control"
