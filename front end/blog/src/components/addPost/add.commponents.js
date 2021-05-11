@@ -9,41 +9,79 @@ function AddPost() {
   let [body, setBody] = useState("");
   let [file, setFile] = useState("");
   let [tags, setTags] = useState("");
-  let [error, setError] = useState("");
-  let token = localStorage.getItem("token");
+  const [error, setError] = useState("");
+  const [titleerror, setTitleerror] = useState({});
+  const [bodyerror, setBodyerror] = useState({});
+
+  const token = localStorage.getItem("token");
+  const textformat = /^[a-z ,.'-]+$/i;
 
   function handleSubmit(event) {
     event.preventDefault();
-    let data = new FormData();
-    data.append("title", title);
-    data.append("body", body);
-    data.append("file", file);
-    data.append("tags", tags);
-    axios
-      .post(
-        "http://localhost:5000/posts",
-        // {
-        //   title: title,
-        //   body: body,
-        //   file: file,
-        // },
-        data,
-        {
-          headers: { authorization: token },
-        }
-      )
-      .then((response) => {
-        // handle success
-        // console.log(response);
-        // history.push("/posts");
-        window.location.replace("http://localhost:3000/posts");
-      })
-      .catch((error) => {
-        // handle error
-        console.log(error);
-        setError(error);
-      });
+
+    const isValid = formValidation();
+
+    if (isValid) {
+      let data = new FormData();
+      data.append("title", title);
+      data.append("body", body);
+      data.append("file", file);
+      data.append("tags", tags);
+
+      axios
+        .post(
+          "http://localhost:5000/posts",
+          // {
+          //   title: title,
+          //   body: body,
+          //   file: file,
+          // },
+          data,
+          {
+            headers: { authorization: token },
+          }
+        )
+        .then((response) => {
+          // handle success
+          // console.log(response);
+          // history.push("/posts");
+          window.location.replace("http://localhost:3000/posts");
+        })
+        .catch((error) => {
+          // handle error
+          console.log(error);
+          setError(error);
+        });
+    }
   }
+
+  const formValidation = () => {
+    let isValid = true;
+
+    let titleError = {};
+    let bodyError = {};
+
+    if (!title.trim().match(textformat)) {
+      titleError.titleerror = "Post Title is Required and must be characters";
+      isValid = false;
+    } else if (title.trim().length < 3) {
+      titleError.titleerror = "Post Title must be minimum 3 characters";
+      isValid = false;
+    }
+
+    if (!body.trim().match(textformat)) {
+      bodyError.bodyerror = "Post Content is Required and must be characters";
+      isValid = false;
+    } else if (body.trim().length < 3) {
+      bodyError.bodyerror = "Post Content must be minimum 3 characters";
+      isValid = false;
+    }
+
+    setTitleerror(titleError);
+    setBodyerror(bodyError);
+
+    return isValid;
+  };
 
   function handleTitleChange(event) {
     setTitle(event.target.value);
@@ -76,6 +114,13 @@ function AddPost() {
           ) : null}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
+              {Object.keys(titleerror).map((key) => {
+                return (
+                  <div className="alert alert-danger">
+                    <span>{titleerror[key]}</span>
+                  </div>
+                );
+              })}
               <label htmlFor="title">Post Title</label>
               <input
                 type="text"
@@ -86,6 +131,13 @@ function AddPost() {
               />
             </div>
             <div className="form-group">
+              {Object.keys(bodyerror).map((key) => {
+                return (
+                  <div className="alert alert-danger">
+                    <span>{bodyerror[key]}</span>
+                  </div>
+                );
+              })}
               <label htmlFor="body">Post Content</label>
               <textarea
                 className="form-control"
