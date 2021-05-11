@@ -20,7 +20,7 @@ router.post(
   (req, res, next) => {
     const { error } = postValidation.postValidation(req.body);
     if (error) {
-      res.status(400).send(error.details[0].message);
+      return res.status(400).json({ error: "Validation Failed" });
     } else {
       next();
     }

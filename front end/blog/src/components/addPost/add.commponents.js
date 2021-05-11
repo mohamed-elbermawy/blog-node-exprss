@@ -9,11 +9,11 @@ function AddPost() {
   let [body, setBody] = useState("");
   let [file, setFile] = useState("");
   let [tags, setTags] = useState("");
+  let [error, setError] = useState("");
   let token = localStorage.getItem("token");
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(tags);
     let data = new FormData();
     data.append("title", title);
     data.append("body", body);
@@ -41,6 +41,7 @@ function AddPost() {
       .catch((error) => {
         // handle error
         console.log(error);
+        setError(error);
       });
   }
 
@@ -65,6 +66,14 @@ function AddPost() {
     <div className="container">
       <div className="row">
         <div className="col-6 offset-3 mt-5" id="mainwrapper">
+          {error ? (
+            <div className="alert alert-danger">
+              <span>
+                Post Title and Post Content Required and must be at least 3
+                characters
+              </span>
+            </div>
+          ) : null}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="title">Post Title</label>
