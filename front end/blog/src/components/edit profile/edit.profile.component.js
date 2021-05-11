@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
+import "../style.css";
+
 const axios = require("axios");
 
 function EditProfile() {
@@ -56,7 +58,7 @@ function EditProfile() {
   return (
     <div className="container">
       <div className="row">
-        <div className="col-4 mt-5 offset-4">
+        <div className="col-4 mt-5 offset-4" id="mainwrapper">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="firstname">First Name</label>

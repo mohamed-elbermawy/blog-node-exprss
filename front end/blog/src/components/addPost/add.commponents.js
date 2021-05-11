@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import "../style.css";
 const axios = require("axios");
 
 function AddPost() {
@@ -63,7 +64,7 @@ function AddPost() {
   return (
     <div className="container">
       <div className="row">
-        <div className="col-6 offset-3 mt-5">
+        <div className="col-6 offset-3 mt-5" id="mainwrapper">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="title">Post Title</label>

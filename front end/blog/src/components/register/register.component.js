@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import "../style.css";
 const axios = require("axios");
 
 function Register() {
@@ -55,7 +56,7 @@ function Register() {
   return (
     <div className="container">
       <div className="row">
-        <div className="col-4 mt-5 offset-4">
+        <div className="col-4 mt-5 offset-4" id="mainwrapper">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="firstName">First Name</label>
