@@ -66,6 +66,9 @@ function Register() {
     if (password.trim() === "") {
       passwordError.passworderror = "Password is Required!!!";
       isValid = false;
+    } else if (password.trim().length < 5) {
+      passwordError.passworderror = "Password must be minimum 5 !!!";
+      isValid = false;
     }
 
     if (!firstname.trim().match(nameformat)) {
@@ -217,8 +220,9 @@ function Register() {
                 name="gender"
                 onChange={handleGenderChange}
               >
+                <option value=""></option>
                 <option value="Male">Male</option>
-                <option value="female">Female</option>
+                <option value="Female">Female</option>
               </select>
             </div>
             <button type="submit" className="btn btn-primary form-control">

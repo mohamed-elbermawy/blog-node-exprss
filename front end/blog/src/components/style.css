@@ -9,10 +9,10 @@
 .custom-file {
   &__input {
     position: absolute;
-    
+
     width: 0.1px;
     height: 0.1px;
-    
+
     opacity: 0;
     overflow: hidden;
     z-index: -1;
@@ -22,9 +22,9 @@
     position: relative;
 
     display: block;
-      width: 50%;
-      min-width: 335px;
-      min-height: 45px;
+    width: 50%;
+    min-width: 335px;
+    min-height: 45px;
 
     margin: 10px 0;
     padding: 0;
@@ -47,18 +47,18 @@
     color: @green;
 
     &:before {
-      content: '\f00c';
-      
+      content: "\f00c";
+
       position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-      
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+
       margin: auto;
-      
+
       color: @white;
-      font-family: 'FontAwesome';
+      font-family: "FontAwesome";
       line-height: 45px;
     }
   }
@@ -74,7 +74,7 @@
   border-radius: 5px;
   cursor: pointer;
   display: inline-block;
-  font-family: 'Rubik', sans-serif;
+  font-family: "Rubik", sans-serif;
   font-size: inherit;
   font-weight: 500;
   margin-bottom: 4rem;
@@ -83,15 +83,15 @@
   position: relative;
   transition: all 0.3s;
   vertical-align: middle;
-    border: 1px dashed black;
-    width: 100%;
-    color: black;
-    text-align: center;
-  
+  border: 1px dashed black;
+  width: 100%;
+  color: black;
+  text-align: center;
+
   &:hover {
     background-color: darken(#f15d22, 10%);
   }
-  
+
   &.btn-1 {
     background-color: #f79159;
     box-shadow: 0 6px darken(#f79159, 10%);
@@ -102,12 +102,12 @@
       top: 2px;
     }
   }
-  
+
   &.btn-2 {
     background-color: #99c793;
     border-radius: 50px;
     overflow: hidden;
-    
+
     &::before {
       color: #fff;
       content: "\f382";
@@ -123,25 +123,25 @@
 
     &:hover {
       background-color: darken(#99c793, 30%);
-        
+
       &::before {
         right: 75%;
       }
     }
   }
-  
+
   &.btn-3 {
     background-color: #ee6d9e;
     border-radius: 0;
     overflow: hidden;
-    
+
     span {
       display: inline-block;
       height: 100%;
       transition: all 0.3s;
       width: 100%;
     }
-    
+
     &::before {
       color: #fff;
       content: "\f382";
@@ -158,14 +158,27 @@
 
     &:hover {
       background-color: darken(#ee6d9e, 30%);
-      
+
       span {
         transform: translateY(300%);
       }
-        
+
       &::before {
         top: 0;
       }
     }
   }
+}
+
+#add-btn-wrrapper {
+  position: fixed;
+  margin-left: 1050px;
+  z-index: 99999999999999;
+  margin-top: 480px;
+}
+
+#add-btn {
+  border-radius: 50%;
+  font-size: 20px;
+  font-weight: bold;
 }

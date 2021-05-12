@@ -52,9 +52,13 @@ function Blog() {
   return (
     <div className="container">
       {token ? (
-        <div className="row col-12">
-          <Link to="/posts/addpost" className="btn btn-primary mt-3 offset-11">
-            add Post
+        <div id="add-btn-wrrapper">
+          <Link
+            to="/posts/addpost"
+            className="btn btn-success mt-3 offset-11"
+            id="add-btn"
+          >
+            +
           </Link>
         </div>
       ) : null}
@@ -179,7 +183,7 @@ function Blog() {
             className="alert alert-info mt-5 col-12 text-center font-weight-bold"
             style={{ padding: "5rem" }}
           >
-            <span>No Blogs let Now</span>
+            <span>No Blogs Until Now</span>
           </div>
         </div>
       )}

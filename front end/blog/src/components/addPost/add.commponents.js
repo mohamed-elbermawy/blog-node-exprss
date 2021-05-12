@@ -14,7 +14,7 @@ function AddPost() {
   const [bodyerror, setBodyerror] = useState({});
 
   const token = localStorage.getItem("token");
-  const textformat = /^[a-z ,.'-]+$/i;
+  // const textformat = /^[a-z ,.'-]+$/i;
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -61,16 +61,16 @@ function AddPost() {
     let titleError = {};
     let bodyError = {};
 
-    if (!title.trim().match(textformat)) {
-      titleError.titleerror = "Post Title is Required and must be characters";
+    if (!title.trim() === "") {
+      titleError.titleerror = "Post Title is Required";
       isValid = false;
     } else if (title.trim().length < 3) {
       titleError.titleerror = "Post Title must be minimum 3 characters";
       isValid = false;
     }
 
-    if (!body.trim().match(textformat)) {
-      bodyError.bodyerror = "Post Content is Required and must be characters";
+    if (!body.trim() === "") {
+      bodyError.bodyerror = "Post Content is Required";
       isValid = false;
     } else if (body.trim().length < 3) {
       bodyError.bodyerror = "Post Content must be minimum 3 characters";

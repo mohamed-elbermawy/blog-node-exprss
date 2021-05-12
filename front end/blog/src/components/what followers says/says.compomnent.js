@@ -46,9 +46,13 @@ function Says() {
   return (
     <div className="container">
       {token ? (
-        <div className="row col-12 mb-5">
-          <Link to="/posts/addpost" className="btn btn-primary mt-3 offset-11">
-            add Post
+        <div id="add-btn-wrrapper">
+          <Link
+            to="/posts/addpost"
+            className="btn btn-success mt-3 offset-11"
+            id="add-btn"
+          >
+            +
           </Link>
         </div>
       ) : null}
@@ -170,10 +174,10 @@ function Says() {
       ) : (
         <div className="row col-12">
           <div
-            className="alert alert-info m-auto col-12 text-center font-weight-bold"
+            className="alert alert-info mt-5 col-12 text-center font-weight-bold"
             style={{ padding: "5rem" }}
           >
-            <span>Your Followings Doesn't say any Thing let Now</span>
+            <span>Your Followings Doesn't say any Thing Until Now</span>
           </div>
         </div>
       )}

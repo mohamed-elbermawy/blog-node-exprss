@@ -162,7 +162,7 @@ function Search() {
             className="alert alert-info m-auto col-12 text-center font-weight-bold"
             style={{ padding: "5rem" }}
           >
-            <span>No Searching Result let Now</span>
+            <span>No Searching Result Until Now</span>
           </div>
         </div>
       )}
